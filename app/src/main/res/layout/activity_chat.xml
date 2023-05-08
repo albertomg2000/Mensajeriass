@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+    tools:context=".activities.ChatActivity"
+    android:background="@drawable/fondo"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:id="@+id/ex"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="7dp"
+        android:background="@null"
+        android:padding="12dp"
+        android:src="@android:drawable/ic_menu_revert"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/perfilother"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginBottom="710dp"
+        app:civ_border_color="#CCCCCC"
+        app:civ_border_width="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ins"
+        android:clickable="true" />
+    <EditText
+        android:id="@+id/messageTextField"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/white"
+        android:ems="10"
+        android:maxLines="10"
+        android:inputType="textMultiLine|textAutoCorrect|textCapSentences"
+        android:hint="Escribe Mensaje"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="insideInset"
+        android:scrollbarSize="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/sendMessageButton"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button android:layout_height="wrap_content"  android:layout_width="wrap_content" android:id="@+id/sendMessageButton" app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="16dp" app:layout_constraintEnd_toEndOf="parent" android:text="Enviar" android:layout_marginRight="8dp" android:layout_marginEnd="8dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/messagesRecylerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/messageTextField"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include"
+        app:layout_constraintVertical_bias="0.0"
+        tools:listitem="@layout/item_message" />
+
+    <ImageView
+        android:id="@+id/imageeeView"
+        android:layout_width="38dp"
+        android:layout_height="60dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/messageTextField"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.625"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.905"
+        tools:srcCompat="@mipmap/lupita" />
+
+    <Button
+        android:id="@+id/imagenEnviar"
+        android:layout_width="42dp"
+        android:layout_height="37dp"
+        android:onClick="EnviarImagen"
+        android:src="@drawable/galeria"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.737"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.965" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
