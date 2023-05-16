@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">MultiChat</string>
+    <string name="borrar">Borrar</string>
+    <string name="editar">editar</string>
+    <string name="textView3">textView3</string>
+    <string name="Cambiarfondo">Cambiar fondo</string>
+    <string name="Entrar">Entrar al chat</string>
+    <string name="reset_password">Restablecer contraseña</string>
+    <string name="email_hint">Correo electrónico</string>
+    <string name="send_email">Enviar correo electrónico</string>
+    <string name="back_to_login">Volver al inicio de sesión</string>
+</resources>

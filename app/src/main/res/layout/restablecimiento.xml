@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="160dp"
+    android:paddingBottom="32dp"
+    android:background="@color/white">
+
+    <ImageView
+        android:layout_width="395dp"
+        android:layout_height="96dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/what" />
+
+    <TextView
+        android:id="@+id/reset_password_title"
+        android:layout_width="wrap_content"
+        android:layout_height="27dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="32dp"
+        android:text="@string/reset_password"
+        android:textColor="@color/negro"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Ingresa tu correo electrónico para restablecer la contraseña"
+        android:textSize="16sp"
+        android:textColor="@color/negro"
+        android:textAlignment="center"/>
+
+    <EditText
+        android:id="@+id/reset_password_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:hint="@string/email_hint"
+        android:textColorHint="@color/gray_light"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
+        android:textColor="@color/negro"/>
+
+    <Button
+        android:id="@+id/reset_password_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/reset_password"
+        android:textColor="@color/white"
+        android:textStyle="bold"/>
+
+</LinearLayout>
