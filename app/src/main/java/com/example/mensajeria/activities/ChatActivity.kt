@@ -227,8 +227,7 @@ class ChatActivity : AppCompatActivity() {
         } else {
             db.collection("chats").document(chatId).collection("messages").document().set(message)
             db.collection("users").document(user).collection("chats").document(chatId).collection("messages").document().set(message)
-            println(chatId);
-            print("CHAT ID *****************---------------------------------------*3234243*")
+           
         }
         messageTextField.setText("")
 
