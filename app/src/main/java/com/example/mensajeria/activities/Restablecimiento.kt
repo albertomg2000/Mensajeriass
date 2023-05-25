@@ -23,7 +23,6 @@ class Restablecimiento : AppCompatActivity() {
         resetButton.setOnClickListener {
 
             val email = emailEditText.text.toString().trim()
-
             if (email.isEmpty()) {
                 emailEditText.error = "Por favor, ingresa tu correo electrónico."
                 emailEditText.requestFocus()

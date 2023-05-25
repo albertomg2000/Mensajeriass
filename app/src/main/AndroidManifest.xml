@@ -22,6 +22,8 @@
         <activity android:name=".activities.FotoPerfilAmpliada" />
         <activity android:name=".activities.FotoAmpliadaOtro" />
         <activity android:name=".activities.Restablecimiento" />
+        <activity android:name=".activities.PerfilActivity" />
+        <activity android:name=".activities.nuestroPerfil" />
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true"

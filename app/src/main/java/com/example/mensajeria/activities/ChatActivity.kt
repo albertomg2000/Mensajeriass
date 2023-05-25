@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,7 +14,6 @@ import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -33,7 +31,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.activity_chat.*
 import java.io.File
 import java.io.FileOutputStream
@@ -44,6 +41,7 @@ class ChatActivity : AppCompatActivity() {
     private var chatId = ""
     private var user = ""
     private var otherUser = ""
+    private var username=""
     val IMAGE_REQUEST_CODE = 1_000;
     lateinit var storage: FirebaseStorage
     var isTextFieldActive = false
@@ -64,9 +62,7 @@ class ChatActivity : AppCompatActivity() {
         intent.getStringExtra("otherUser")?.let { otherUser = it }
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
-
-
-        val perfilother = findViewById<CircleImageView>(R.id.perfilother)
+        val perfilother = findViewById<ImageButton>(R.id.perfilother)
         perfilother.setOnClickListener{
             val intent = Intent(this, FotoAmpliadaOtro::class.java)
             intent.putExtra("chatId", chatId)
@@ -76,23 +72,34 @@ class ChatActivity : AppCompatActivity() {
         true
         finish()}
 
-
         titulo.textSize = 20f // 20sp
-
         val params = titulo.layoutParams as ConstraintLayout.LayoutParams
         params.marginStart = resources.getDimensionPixelSize(R.dimen.toolbar_title_margin_start)+ 250
-
         titulo.layoutParams = params
-
-        val foto = findViewById<CircleImageView>(R.id.perfilother)
+        val foto = findViewById<ImageButton>(R.id.perfilother)
+        val storageRef = FirebaseStorage.getInstance().getReference().child("images/users/$otherUser/profile.png")
 
         val fullText = otherUser
-        val storageRef = FirebaseStorage.getInstance().getReference().child("images/users/$otherUser/profile.png")
         val atIndex = fullText.lastIndexOf("@")
         if (atIndex != -1) {
 
-            val username = fullText.substring(0, atIndex)
+             username = fullText.substring(0, atIndex)
             titulo.text = username
+        }
+
+
+        titulo.setOnClickListener {
+            // Aquí puedes agregar el código para navegar a otra página
+            // Por ejemplo, puedes usar Intent para iniciar otra actividad
+            val intent = Intent(this, PerfilActivity::class.java)
+            intent.putExtra("otherUser", otherUser)
+            intent.putExtra("nameOtherUser", username)
+            intent.putExtra("chatId", chatId)
+            intent.putExtra("user", user)
+            startActivity(intent)
+            finish()
+            true
+
         }
 // Definir las dimensiones máximas de la imagen
         val maxWidth = 100
@@ -115,11 +122,6 @@ class ChatActivity : AppCompatActivity() {
             foto.background = resources.getDrawable(R.drawable.rounded_image)
         }.addOnFailureListener { exception ->
         }
-        val myButton: Button = findViewById(com.example.mensajeria.R.id.emote)
-        myButton.setOnClickListener {
-            //uploadImageToFirebaseStorage()
-        }
-
                 if (chatId.isNotEmpty() && user.isNotEmpty()) {
                     val file = File("/data/data/com.example.mensajeria/files/fondo.png")
                     val exists = file.exists()
@@ -138,7 +140,7 @@ class ChatActivity : AppCompatActivity() {
                     }else{
                     }
                     initViews()
-                    imagenDeFuera()
+
                 }
         messageTextField.setOnFocusChangeListener { view, hasFocus ->
 
@@ -178,7 +180,7 @@ class ChatActivity : AppCompatActivity() {
                 // No se utiliza en este caso
             }
         })
-
+        //Cuando envio el mensaje me dirigirá al último mensaje enviado
         messagesRecylerView.layoutManager = LinearLayoutManager(this)
         messagesRecylerView.adapter = MessageAdapter(user)
 
@@ -189,9 +191,9 @@ class ChatActivity : AppCompatActivity() {
             sendMessage()
 
         }
-
+        //recoger mensajes
         val chatRef = db.collection("chats").document(chatId)
-
+        //dob es uncampo de fecha
         chatRef.collection("messages").orderBy("dob", Query.Direction.DESCENDING)
             .limit(25)
             .get()
@@ -222,13 +224,11 @@ class ChatActivity : AppCompatActivity() {
             message = messageTextField.text.toString(),
             from = user
         )
-
         if (message.message.length <= 0) {
         } else {
             db.collection("chats").document(chatId).collection("messages").document().set(message)
             db.collection("users").document(user).collection("chats").document(chatId).collection("messages").document().set(message)
-            println(chatId);
-            print("CHAT ID *****************---------------------------------------*3234243*")
+
         }
         messageTextField.setText("")
 
@@ -241,8 +241,27 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (R.id.Cambiarfondo == R.id.Cambiarfondo) {
-
-            pickImageFromGallery()
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                ) {
+                } else {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
+                    )
+                }
+            } else {
+                pickImageFromGallery()
+            }
 
         }
         return true
@@ -252,9 +271,6 @@ class ChatActivity : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         startActivityForResult(intent, IMAGE_REQUEST_CODE)
-    }
-
-    private fun imagenDeFuera() {
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         super.onActivityResult(requestCode, resultCode, resultData)
@@ -267,7 +283,6 @@ class ChatActivity : AppCompatActivity() {
                     )
                     != PackageManager.PERMISSION_GRANTED
                 ) {
-
                     if (ActivityCompat.shouldShowRequestPermissionRationale(
                             this,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -289,39 +304,17 @@ class ChatActivity : AppCompatActivity() {
                     outputStream.close()
                     val bitmap = BitmapFactory.decodeFile(drawablePath)
 
-                    imageView.setImageBitmap(bitmap)
-                    ex.background = imageView.drawable
-                    ex.background.intrinsicHeight
-                    imageView.isInvisible=true
+                    val metrics = DisplayMetrics()
+                    windowManager.defaultDisplay.getMetrics(metrics)
+                    var width = metrics.widthPixels // ancho absoluto en pixels
+                    val height = metrics.heightPixels
+                    val resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
+
+                    val drawable = BitmapDrawable(resources, resizedBitmap)
+                    drawable.gravity = Gravity.FILL
+                    ex.background = drawable
 
                 }
-            }
-        }
-    }
-
-    fun HahechoClick(view: View) {
-    }
-
-    private fun uploadImageToFirebaseStorage(uri: Uri) {
-        val storageRef = storage.reference
-        val imagesRef = storageRef.child("images/${uri.lastPathSegment}")
-        val uploadTask = imagesRef.putFile(uri)
-
-        uploadTask.continueWithTask { task ->
-            if (!task.isSuccessful) {
-                task.exception?.let {
-                    throw it
-                }
-            }
-            imagesRef.downloadUrl
-        }.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val downloadUri = task.result.toString()
-                val message = Message(
-                    message = downloadUri,
-                    from = user
-                )
-                db.collection("chats").document(chatId).collection("messages").document().set(message)
             }
         }
     }
@@ -337,5 +330,6 @@ class ChatActivity : AppCompatActivity() {
         return inSampleSize
     }
 }
+
 
 

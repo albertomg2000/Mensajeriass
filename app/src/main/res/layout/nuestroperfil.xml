@@ -1,0 +1,94 @@
+<!-- activity_profile.xml -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayout2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/negro">
+
+    <LinearLayout
+        android:id="@+id/profileLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:minHeight="0dp"
+        android:background="@color/negro">
+        <ImageButton
+            android:id="@+id/back_button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:background="@null"
+            android:src="@android:drawable/ic_menu_revert"
+            />
+        <ImageButton
+            android:id="@+id/profilePictureImageView2"
+            android:layout_width="230dp"
+            android:layout_height="215dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/what"
+            android:scaleType="centerCrop"
+            android:src="@drawable/fotosinperfil" />
+
+        <TextView
+            android:id="@+id/nameTextView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:id="@+id/emailTextView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="johndoe@example.com"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="4dp"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/statusEditText2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:minWidth="500dp"
+            />
+
+
+        <Button
+            android:id="@+id/Guardar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#1F6505"
+            android:text="Guardar"
+            android:textColor="#FFFFFF"
+            android:visibility="invisible"
+            android:textSize="16sp" />
+
+
+    </LinearLayout>
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/loading_image_view2"
+        android:layout_width="wrap_content"
+        android:layout_height="415dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="1dp"
+        android:src="@drawable/bimbo" />
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/loading_letter_view2"
+        android:layout_width="401dp"
+        android:layout_height="278dp"
+        android:layout_marginTop="484dp"
+        android:src="@drawable/loading_try" />
+
+</RelativeLayout>

@@ -8,14 +8,12 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -52,14 +50,37 @@ class FotoPerfilAmpliada : AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.black))
         actionBar?.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.negro)))
-        window.statusBarColor = ContextCompat.getColor(this, R.color.negro)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.negro)
+        }
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
         toolbar.title = ""
         val backButton = findViewById<ImageButton>(R.id.back_button)
 
         botonPerfil.setOnClickListener {
-            pickImageFromGallery()
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                ) {
+                    // Explicar al usuario por qué se necesita el permiso y luego solicitarlo
+                } else {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                        MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
+                    )
+
+                }
+            } else {
+                pickImageFromGallery()
+            }
         }
         // Agregar un OnClickListener al ImageButton
         backButton.setOnClickListener {
@@ -86,6 +107,8 @@ class FotoPerfilAmpliada : AppCompatActivity() {
         LoadingImage = findViewById(R.id.loading_image_view)
         LoadingLetter = findViewById(R.id.loading_letter_view)
         imageView.visibility = View.GONE
+
+
         // Obtener la referencia al archivo de imagen en el storage
         val storageRef = FirebaseStorage.getInstance().getReference()
             .child("images/users/" + user + "/profile.png")
@@ -98,6 +121,7 @@ class FotoPerfilAmpliada : AppCompatActivity() {
             LoadingImage.visibility = View.GONE
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
             imageView.visibility = View.VISIBLE
+
         }.addOnFailureListener { exception ->
             // Manejar errores
         }
@@ -172,19 +196,7 @@ class FotoPerfilAmpliada : AppCompatActivity() {
                     )
                     != PackageManager.PERMISSION_GRANTED
                 ) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(
-                            this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        )
-                    ) {
-                        // Explicar al usuario por qué se necesita el permiso y luego solicitarlo
-                    } else {
-                        ActivityCompat.requestPermissions(
-                            this,
-                            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                            MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
-                        )
-                    }
+                    // Permiso denegado, muestra un mensaje o realiza alguna acción apropiada
                 } else {
                     val options = BitmapFactory.Options()
                     val bitmap = BitmapFactory.decodeStream(

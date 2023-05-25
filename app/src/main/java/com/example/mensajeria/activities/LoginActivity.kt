@@ -2,13 +2,17 @@ package com.example.mensajeria.activities
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.mensajeria.R
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.activity_login.*
@@ -22,7 +26,9 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.green)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.green)
+        }
         loginButton.setOnClickListener { loginUser() }
         createButton.setOnClickListener { createUser() }
         forgotPasswordText.setOnClickListener {
@@ -41,7 +47,6 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, ListOfChatsActivity::class.java)
             intent.putExtra("user", currentUser.email)
             startActivity(intent)
-
             finish()
         }
     }
@@ -65,7 +70,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            if(task.isSuccessful){
+            if(task.isSuccessful) {
                 print(email.length)
                 val currentUser = auth.currentUser
                 val userId = currentUser?.uid
@@ -87,34 +92,64 @@ class LoginActivity : AppCompatActivity() {
                 }.addOnFailureListener { exception ->
                 }
 
-            } else {
-                task.exception?.let {
-                    Toast.makeText(baseContext, it.message, Toast.LENGTH_LONG).show()
-                }
-            }
-        }
+                val db = FirebaseFirestore.getInstance()
 
+                val estadosRef = db.collection("Estados")
+                val docRef = estadosRef.document(email)
+
+                val estadoMap = hashMapOf("estado" to "Hey there im using Whatsapp!!")
+
+                docRef.set(estadoMap)
+                    .addOnSuccessListener {
+                        // La información se guardó exitosamente en Firestore
+                    }
+                    .addOnFailureListener { exception ->
+                        // Ocurrió un error al guardar la información en Firestore
+                        // Manejar el error apropiadamente
+                    }
+            }
+            }
     }
 
 
+    private fun isValidEmail(email: String): Boolean {
+        val pattern = Patterns.EMAIL_ADDRESS
+        return pattern.matcher(email).matches()
+    }
 
 
-
-
-
-    private fun loginUser(){
+    private fun isPasswordValid(password: String): Boolean {
+        // Aquí puedes establecer tus propios criterios de validación de contraseña
+        return password.length >= 6
+    }
+    private fun loginUser() {
         val email = emailText.text.toString()
         val password = passwordText.text.toString()
-
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            if(task.isSuccessful){
-                checkUser()
-            } else {
-                task.exception?.let {
-                    Toast.makeText(baseContext, it.message, Toast.LENGTH_LONG).show()
+        if (email.length > 1) {
+            if (email.isNotBlank() && isValidEmail(email)) {
+                if (password.isNotBlank() && isPasswordValid(password)) {
+                    auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            checkUser()
+                        } else {
+                            val exception = task.exception
+                            if (exception is FirebaseAuthInvalidUserException) {
+                                Toast.makeText(baseContext, "No existe un usuario con ese correo electrónico", Toast.LENGTH_LONG).show()
+                            } else {
+                                Toast.makeText(baseContext, "Contraseña incorrecta", Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                } else {
+                    Toast.makeText(baseContext, "Contraseña inválida (debe tener al menos 6 caracteres)", Toast.LENGTH_SHORT).show()
                 }
+            } else {
+                Toast.makeText(baseContext, "Correo electrónico inválido", Toast.LENGTH_SHORT).show()
             }
-
+        } else {
+            Toast.makeText(baseContext, "Correo electrónico demasiado corto", Toast.LENGTH_SHORT).show()
         }
     }
+
+
 }

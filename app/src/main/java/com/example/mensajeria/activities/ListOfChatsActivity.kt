@@ -32,6 +32,7 @@ import java.util.*
 class ListOfChatsActivity : AppCompatActivity() {
     private var user = ""
     private var miUsuario= ""
+    private var username=""
     private var db = Firebase.firestore
     private val mHandler = Handler()
     var NumeroDeChats=0
@@ -45,22 +46,25 @@ class ListOfChatsActivity : AppCompatActivity() {
         mHandler.postDelayed(mRunnable, 10000)
         intent.getStringExtra("user")?.let { user = it }
         miUsuario=user
-        foto.setOnClickListener{
+        val fullText = user
+        val atIndex = fullText.lastIndexOf("@")
 
-            val intent = Intent(this, FotoPerfilAmpliada::class.java)
+        foto.setOnClickListener{
+            if (atIndex != -1) {
+                 username = fullText.substring(0, atIndex)
+            }
+            val intent = Intent(this, nuestroPerfil::class.java)
             intent.putExtra("user", user)
+            intent.putExtra("username", username)
             startActivity(intent)
             true
             finish()
         }
         val storageRef = FirebaseStorage.getInstance().getReference().child("images/users/$user/profile.png")
-
         val foto = findViewById<ImageButton>(R.id.foto)
-
 // Definir las dimensiones máximas de la imagen
         val maxWidth = 100
         val maxHeight = 100
-
 // Descargar imagen del Storage y convertirla a Bitmap
         storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener { bytes ->
             // Decodificar los bytes en un Bitmap
@@ -172,7 +176,7 @@ class ListOfChatsActivity : AppCompatActivity() {
         return when (item.itemId) {
 
             R.id.delete_item -> {
-
+                System.out.println((ListViews.adapter as ChatAdapter).getData()[info.position].users[0])
                 var Seleccion = (ListViews.adapter as ChatAdapter).getData()
 
                 val builder = AlertDialog.Builder(this)
@@ -189,17 +193,18 @@ class ListOfChatsActivity : AppCompatActivity() {
                 builder.setPositiveButton("Borrar chat") { dialogo, _ ->
                     val db = FirebaseFirestore.getInstance()
                     val collectionRef = db.collection("users")
-                    collectionRef.document(user).collection("chats").document((Seleccion.get(info.position).id)).delete()
+                    collectionRef.document((ListViews.adapter as ChatAdapter).getData()[info.position].users[1]).collection("chats").document((Seleccion.get(info.position).id)).delete()
+                    collectionRef.document((ListViews.adapter as ChatAdapter).getData()[info.position].users[0]).collection("chats").document((Seleccion.get(info.position).id)).delete()
                         .addOnSuccessListener {
-                           collectionRef.document(user).collection("chats").document((Seleccion.get(info.position).id)).delete()
                         }
                         .addOnFailureListener { exception ->
                             println("Error al eliminar el documento: $exception")
                         }
                     val collectionRefe = db.collection("chats")
                     collectionRefe.document((Seleccion.get(info.position).id)).delete()
-                        .addOnSuccessListener {
 
+                        .addOnSuccessListener {
+                            initViews()
                         }
                         .addOnFailureListener { exception ->
                             println("Error al eliminar el documento: $exception")
@@ -219,9 +224,22 @@ class ListOfChatsActivity : AppCompatActivity() {
         }
     }
 
+    private var isButtonClickable = true
+    private val clickDelayMillis = 3000L // 3 segundos
 
+    private val clickHandler = Handler()
+
+    private val clickRunnable = Runnable {
+        isButtonClickable = true
+    }
     private fun initViews(){
-        newChatButton.setOnClickListener { newChat() }
+        newChatButton.setOnClickListener {
+            if (isButtonClickable) {
+                newChat()
+                isButtonClickable = false
+                clickHandler.postDelayed(clickRunnable, clickDelayMillis)
+            }
+        }
         val userRef = db.collection("users").document(user)
         //recoge los numeros de liostviews que habra
         userRef.collection("chats")
@@ -313,7 +331,7 @@ class ListOfChatsActivity : AppCompatActivity() {
                 } else {
                     if (listMessages.isEmpty()) {
                         val chat = listMessages2.first()
-                        val intent = Intent(this, ChatActivity::class.java)
+                        val intent = Intent(this, PerfilActivity::class.java)
                         intent.putExtra("chatId", chat.id)
                         intent.putExtra("user", chat.users[0])
                         intent.putExtra("otherUser", otherUser)
@@ -321,7 +339,7 @@ class ListOfChatsActivity : AppCompatActivity() {
                         startActivity(intent)
                     }else {
                         val chat = listMessages.first()
-                        val intent = Intent(this, ChatActivity::class.java)
+                        val intent = Intent(this, PerfilActivity::class.java)
                         intent.putExtra("chatId", chat.id)
                         intent.putExtra("user", chat.users[0])
                         intent.putExtra("otherUser", otherUser)

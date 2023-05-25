@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -35,7 +36,6 @@ class FotoAmpliadaOtro : AppCompatActivity() {
     private var user = ""
     var MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0
     val IMAGE_REQUEST_CODE = 1_000;
-    var FotoCambiada = false
 
     private lateinit var LoadingImage: ImageView
     private lateinit var LoadingLetter: ImageView
@@ -52,7 +52,9 @@ class FotoAmpliadaOtro : AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.black))
         actionBar?.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.negro)))
-        window.statusBarColor = ContextCompat.getColor(this, R.color.negro)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = ContextCompat.getColor(this, R.color.negro)
+        }
 
         supportActionBar?.setDisplayShowTitleEnabled(false)
         toolbar.title = ""
@@ -67,7 +69,9 @@ class FotoAmpliadaOtro : AppCompatActivity() {
         intent.putExtra("otherUser", otherUser)
         startActivity(intent)
         true
-        finish()}
+        finish()
+       }
+
         val fullText = otherUser
         val atIndex = fullText.lastIndexOf("@")
         if (atIndex != -1) {
@@ -101,7 +105,6 @@ class FotoAmpliadaOtro : AppCompatActivity() {
         }.addOnFailureListener { exception ->
             // Manejar errores
         }
-
     }
     override fun onBackPressed() {
 
@@ -110,6 +113,8 @@ class FotoAmpliadaOtro : AppCompatActivity() {
         intent.putExtra("user", user)
         intent.putExtra("otherUser", otherUser)
         startActivity(intent)
+        System.out.println(chatId);
+
         true
         finish()}
 
@@ -125,11 +130,6 @@ class FotoAmpliadaOtro : AppCompatActivity() {
     }
 
 
-    private fun pickImageFromGallery() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        startActivityForResult(intent, IMAGE_REQUEST_CODE)
-    }
 
     private fun uploadImageToFirebaseStorage(bitmap: Bitmap) {
         // Mostrar diálogo de carga

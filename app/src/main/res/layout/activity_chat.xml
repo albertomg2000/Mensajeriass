@@ -30,13 +30,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <ImageButton
         android:id="@+id/perfilother"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginStart="60dp"
         android:layout_marginBottom="710dp"
-        android:background="@android:color/white"
+        android:background="@drawable/rounded_image"
         app:civ_border_color="#CCCCCC"
         app:civ_border_width="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -52,7 +52,7 @@
         android:ems="10"
         android:maxLines="10"
         android:inputType="textMultiLine|textAutoCorrect|textCapSentences"
-        android:hint="Escribe Mensaje"
+        android:hint="Mensaje"
         android:scrollbars="vertical"
         android:scrollbarStyle="insideInset"
         android:scrollbarSize="1dp"
@@ -90,18 +90,6 @@
         app:layout_constraintVertical_bias="0.905"
         tools:srcCompat="@mipmap/lupita" />
 
-    <Button
-        android:id="@+id/emote"
-        android:layout_width="42dp"
-        android:layout_height="37dp"
-        android:onClick="emote"
-        android:src="@drawable/galeria"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.737"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.965" />
 
 
 

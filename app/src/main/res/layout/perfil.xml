@@ -1,0 +1,85 @@
+<!-- activity_profile.xml -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/negro"
+    android:id="@+id/RelativeLayout">
+
+
+    <LinearLayout
+        android:id="@+id/profileLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/negro"
+        android:minHeight="0dp"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:background="@null"
+            android:src="@android:drawable/ic_menu_revert" />
+
+        <ImageButton
+            android:id="@+id/profilePictureImageView"
+            android:layout_width="230dp"
+            android:layout_height="215dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/what"
+            android:scaleType="centerCrop"
+            android:src="@drawable/fotosinperfil" />
+
+        <TextView
+            android:id="@+id/nameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/emailTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="johndoe@example.com"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/statusTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="hnfrnnrrnnnr"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+
+    </LinearLayout>
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/loading_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="415dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="1dp"
+        android:src="@drawable/bimbo" />
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/loading_letter_view"
+        android:layout_width="401dp"
+        android:layout_height="278dp"
+        android:layout_marginTop="484dp"
+        android:src="@drawable/loading_try" />
+
+
+</RelativeLayout>

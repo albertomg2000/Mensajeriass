@@ -1,13 +1,16 @@
 package com.example.mensajeria.activities
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.example.mensajeria.R
 
 class SplashActivity : AppCompatActivity() {
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.statusBarColor = ContextCompat.getColor(this, R.color.green)
