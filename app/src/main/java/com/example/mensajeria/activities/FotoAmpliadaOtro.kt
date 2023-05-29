@@ -1,7 +1,5 @@
 package com.example.mensajeria.activities
 
-
-
 import android.Manifest
 import android.app.ProgressDialog
 import android.content.Intent
@@ -32,10 +30,12 @@ import java.io.ByteArrayOutputStream
 class FotoAmpliadaOtro : AppCompatActivity() {
     private var chatId = ""
     private var otherUser = ""
+    private var url = ""
+    private var chat = 100
+    private var imagenPerfiles = 100
     private lateinit var imageView: ImageView
     private var user = ""
-    var MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0
-    val IMAGE_REQUEST_CODE = 1_000;
+
 
     private lateinit var LoadingImage: ImageView
     private lateinit var LoadingLetter: ImageView
@@ -45,6 +45,10 @@ class FotoAmpliadaOtro : AppCompatActivity() {
         intent.getStringExtra("user")?.let { user = it }
         intent.getStringExtra("chatId")?.let { chatId = it }
         intent.getStringExtra("otherUser")?.let { otherUser = it }
+        intent.getIntExtra("chat",100).let { chat = it }
+        intent.getIntExtra("imagenPerfiles",100).let { imagenPerfiles = it }
+        intent.getStringExtra("url")?.let { url = it }
+
         // Configurar el toolbar
         val toolbar = findViewById<Toolbar>(R.id.custom_toolbar)
         val botonPerfil = findViewById<Button>(R.id.buttonPerfil)
@@ -61,15 +65,26 @@ class FotoAmpliadaOtro : AppCompatActivity() {
         val backButton = findViewById<ImageButton>(R.id.back_button)
 
         botonPerfil.isInvisible=true
-
+        System.out.println(chat)
        backButton.setOnClickListener {
-        val intent = Intent(this, ChatActivity::class.java)
-        intent.putExtra("chatId", chatId)
-        intent.putExtra("user", user)
-        intent.putExtra("otherUser", otherUser)
-        startActivity(intent)
-        true
-        finish()
+
+           if (chat == 0) {
+               val intent = Intent(this, ChatActivity::class.java)
+               intent.putExtra("chatId", chatId)
+               intent.putExtra("user", user)
+               intent.putExtra("otherUser", otherUser)
+               startActivity(intent)
+
+               true
+               finish()
+           }else if (chat==1){
+               val intent = Intent(this, PerfilActivity::class.java)
+               intent.putExtra("chatId", chatId)
+               intent.putExtra("user", user)
+               intent.putExtra("otherUser", otherUser)
+               startActivity(intent)
+
+           }
        }
 
         val fullText = otherUser
@@ -79,7 +94,6 @@ class FotoAmpliadaOtro : AppCompatActivity() {
             titulo.text = username
         }
         titulo.textSize = 20f // 20sp
-
         val params = titulo.layoutParams as ConstraintLayout.LayoutParams
         params.marginStart = resources.getDimensionPixelSize(R.dimen.toolbar_title_margin_start)
         titulo.layoutParams = params
@@ -91,32 +105,55 @@ class FotoAmpliadaOtro : AppCompatActivity() {
         LoadingLetter = findViewById(R.id.loading_letter_view)
         imageView.visibility = View.GONE
         // Obtener la referencia al archivo de imagen en el storage
-        val storageRef = FirebaseStorage.getInstance().getReference()
+        if(imagenPerfiles==100) {val storageRef = FirebaseStorage.getInstance().getReference()
             .child("images/users/" + otherUser + "/profile.png")
+            storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener { bytes ->
+                val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                imageView.setImageBitmap(bmp)
+                LoadingLetter.visibility = View.GONE
+                LoadingImage.visibility = View.GONE
+                imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                imageView.visibility = View.VISIBLE
+            }.addOnFailureListener { exception ->
+                // Manejar errores
+            }
 
-        // Descargar la imagen y mostrarla en el ImageView
-        storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener { bytes ->
-            val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-            imageView.setImageBitmap(bmp)
-            LoadingLetter.visibility = View.GONE
-            LoadingImage.visibility = View.GONE
-            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-            imageView.visibility = View.VISIBLE
-        }.addOnFailureListener { exception ->
-            // Manejar errores
+        }else if (imagenPerfiles==1){
+            val imageUrl = url
+            val storageRef = Firebase.storage.getReferenceFromUrl(imageUrl)
+            storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener { bytes ->
+                val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                imageView.setImageBitmap(bmp)
+                LoadingLetter.visibility = View.GONE
+                LoadingImage.visibility = View.GONE
+                imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                imageView.visibility = View.VISIBLE
+            }.addOnFailureListener { exception ->
+                // Manejar errores
+            }
+        }
+            }
+
+        //depende desde donde haya ampliado la imagen
+    override fun onBackPressed() {
+        if (chat == 0) {
+            val intent = Intent(this, ChatActivity::class.java)
+            intent.putExtra("chatId", chatId)
+            intent.putExtra("user", user)
+            intent.putExtra("otherUser", otherUser)
+            startActivity(intent)
+
+            true
+            finish()
+        }else if (chat==1){
+            val intent = Intent(this, PerfilActivity::class.java)
+            intent.putExtra("chatId", chatId)
+            intent.putExtra("user", user)
+            intent.putExtra("otherUser", otherUser)
+            startActivity(intent)
+
         }
     }
-    override fun onBackPressed() {
-
-        val intent = Intent(this, ChatActivity::class.java)
-        intent.putExtra("chatId", chatId)
-        intent.putExtra("user", user)
-        intent.putExtra("otherUser", otherUser)
-        startActivity(intent)
-        System.out.println(chatId);
-
-        true
-        finish()}
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Manejar eventos del toolbar
@@ -130,88 +167,6 @@ class FotoAmpliadaOtro : AppCompatActivity() {
     }
 
 
-
-    private fun uploadImageToFirebaseStorage(bitmap: Bitmap) {
-        // Mostrar diálogo de carga
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setTitle("Subiendo imagen...")
-        progressDialog.show()
-
-        // Convertir el Bitmap a un arreglo de bytes
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
-        val data = baos.toByteArray()
-
-        // Subir imagen a Storage
-        val storageRef = Firebase.storage.reference.child("images/users/$otherUser/profile.png")
-        val uploadTask = storageRef.putBytes(data)
-
-        uploadTask.addOnSuccessListener {
-            // Ocultar diálogo de carga
-            progressDialog.dismiss()
-
-            storageRef.downloadUrl.addOnSuccessListener { uri ->
-                // Aquí puedes hacer algo con la URL de descarga de la imagen, como guardarla en la base de datos.
-            }.addOnFailureListener { exception ->
-                // Manejar errores de descarga de URL.
-            }
-        }.addOnFailureListener { exception ->
-            // Manejar errores de carga de imagen.
-
-            // Ocultar diálogo de carga
-            progressDialog.dismiss()
-        }
-    }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        super.onActivityResult(requestCode, resultCode, resultData)
-        if (requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
-            resultData?.data?.also { uri ->
-                if (ContextCompat.checkSelfPermission(
-                        this,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    )
-                    != PackageManager.PERMISSION_GRANTED
-                ) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(
-                            this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        )
-                    ) {
-                        // Explicar al usuario por qué se necesita el permiso y luego solicitarlo
-                    } else {
-                        ActivityCompat.requestPermissions(
-                            this,
-                            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                            MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
-                        )
-                    }
-                } else {
-                    val options = BitmapFactory.Options()
-                    val bitmap = BitmapFactory.decodeStream(
-                        contentResolver.openInputStream(uri),
-                        null,
-                        options
-                    )
-
-                    // Establecer la imagen en el ImageView con el ScaleType correspondiente
-                    imageView.scaleType = ImageView.ScaleType.CENTER_CROP
-                    imageView.setImageBitmap(bitmap)
-
-                    // Obtener el Bitmap de la imagen escalada en el ImageView
-                    imageView.isDrawingCacheEnabled = true
-                    imageView.buildDrawingCache()
-                    val scaledBitmap = imageView.drawingCache
-
-                    // Subir la imagen a Firebase Storage
-                    if (scaledBitmap != null) {
-                        uploadImageToFirebaseStorage(scaledBitmap)
-                    }
-                }
-            }
-        }
-    }
 
 }
 

@@ -1,6 +1,6 @@
-<!-- activity_profile.xml -->
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/relativeLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,6 +14,7 @@
         android:padding="20dp"
         android:minHeight="0dp"
         android:background="@color/negro">
+
         <ImageButton
             android:id="@+id/back_button2"
             android:layout_width="wrap_content"
@@ -21,8 +22,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
             android:background="@null"
-            android:src="@android:drawable/ic_menu_revert"
-            />
+            android:src="@android:drawable/ic_menu_revert" />
+
         <ImageButton
             android:id="@+id/profilePictureImageView2"
             android:layout_width="230dp"
@@ -60,9 +61,7 @@
             android:text=""
             android:textColor="#FFFFFF"
             android:textSize="18sp"
-            android:minWidth="500dp"
-            />
-
+            android:minWidth="500dp" />
 
         <Button
             android:id="@+id/Guardar"
@@ -74,8 +73,37 @@
             android:visibility="invisible"
             android:textSize="16sp" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/horizontalRecyclerView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal" />
+        <Button
+            android:id="@+id/addPhotosButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="#1F6505"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:text="Añadir fotos" />
+
+        <ImageView
+            android:id="@+id/imageView24"
+            android:layout_width="413dp"
+            android:layout_height="400dp"
+            android:layout_marginBottom="100dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            tools:srcCompat="@tools:sample/avatars[3]"
+            android:visibility="invisible"/>
+
+
+
 
     </LinearLayout>
+
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/loading_image_view2"
         android:layout_width="wrap_content"

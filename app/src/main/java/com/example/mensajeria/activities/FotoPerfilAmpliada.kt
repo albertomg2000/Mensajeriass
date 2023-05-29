@@ -32,6 +32,7 @@ class FotoPerfilAmpliada : AppCompatActivity() {
 
     private lateinit var imageView: ImageView
     private var user = ""
+    private var userName = ""
     var MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0
     val IMAGE_REQUEST_CODE = 1_000;
 
@@ -42,6 +43,7 @@ class FotoPerfilAmpliada : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.foto_ampliada)
         intent.getStringExtra("user")?.let { user = it }
+        intent.getStringExtra("username")?.let { userName = it }
 
         // Configurar el toolbar
         val toolbar = findViewById<Toolbar>(R.id.custom_toolbar)
@@ -84,9 +86,11 @@ class FotoPerfilAmpliada : AppCompatActivity() {
         }
         // Agregar un OnClickListener al ImageButton
         backButton.setOnClickListener {
-            val intent = Intent(this, ListOfChatsActivity::class.java)
+            val intent = Intent(this, nuestroPerfil::class.java)
             intent.putExtra("user", user)
+            intent.putExtra("username", userName)
             startActivity(intent)
+            true
             finish()
         }
         val fullText = user
@@ -140,10 +144,11 @@ class FotoPerfilAmpliada : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-
-        val intent = Intent(this, ListOfChatsActivity::class.java)
+        val intent = Intent(this, nuestroPerfil::class.java)
         intent.putExtra("user", user)
+        intent.putExtra("username", userName)
         startActivity(intent)
+        true
         finish()
     }
 

@@ -117,7 +117,7 @@ class ListOfChatsActivity : AppCompatActivity() {
         }
     }
 
-
+    //agrego el nuevl perfil a mi base de datos
     private fun insertarDatos(usuario:String) {
         val db = Firebase.firestore
         val datos= hashMapOf("name" to usuario)
@@ -175,13 +175,11 @@ class ListOfChatsActivity : AppCompatActivity() {
         val info = item.menuInfo as AdapterView.AdapterContextMenuInfo
         return when (item.itemId) {
 
+            //borrar chat
             R.id.delete_item -> {
                 System.out.println((ListViews.adapter as ChatAdapter).getData()[info.position].users[0])
                 var Seleccion = (ListViews.adapter as ChatAdapter).getData()
-
                 val builder = AlertDialog.Builder(this)
-
-
                 val title = ImageView(this)
                 title.setImageResource(R.drawable.warning)
                 title.setBackgroundColor(Color.BLACK);
@@ -210,10 +208,15 @@ class ListOfChatsActivity : AppCompatActivity() {
                             println("Error al eliminar el documento: $exception")
                         }
                 }
+                builder.setNegativeButton("Cancelar") { dialog, which ->
+                    dialog.dismiss()
+                }
                 builder.show()
                 initViews()
                 true
-            } R.id.Entrar -> {
+            }
+            //entrar al chat
+            R.id.Entrar -> {
                 var Seleccion = (ListViews.adapter as ChatAdapter).getData()
                 chatSelected( Seleccion.get(info.position))
                 initViews()
@@ -226,13 +229,12 @@ class ListOfChatsActivity : AppCompatActivity() {
 
     private var isButtonClickable = true
     private val clickDelayMillis = 3000L // 3 segundos
-
     private val clickHandler = Handler()
-
     private val clickRunnable = Runnable {
         isButtonClickable = true
     }
     private fun initViews(){
+        //evito que al darle a buscar chats se me creen mas de un chat
         newChatButton.setOnClickListener {
             if (isButtonClickable) {
                 newChat()
@@ -253,7 +255,7 @@ class ListOfChatsActivity : AppCompatActivity() {
                         R.layout.item_chat, listChats
                     )
             }
-//para que se vean los litsbiews
+//para que se vean los litsviews
         userRef.collection("chats")
             .get()
             .addOnSuccessListener { chats ->
@@ -331,7 +333,7 @@ class ListOfChatsActivity : AppCompatActivity() {
                 } else {
                     if (listMessages.isEmpty()) {
                         val chat = listMessages2.first()
-                        val intent = Intent(this, PerfilActivity::class.java)
+                        val intent = Intent(this, ChatActivity::class.java)
                         intent.putExtra("chatId", chat.id)
                         intent.putExtra("user", chat.users[0])
                         intent.putExtra("otherUser", otherUser)
@@ -339,7 +341,7 @@ class ListOfChatsActivity : AppCompatActivity() {
                         startActivity(intent)
                     }else {
                         val chat = listMessages.first()
-                        val intent = Intent(this, PerfilActivity::class.java)
+                        val intent = Intent(this, ChatActivity::class.java)
                         intent.putExtra("chatId", chat.id)
                         intent.putExtra("user", chat.users[0])
                         intent.putExtra("otherUser", otherUser)

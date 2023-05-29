@@ -75,7 +75,7 @@ class LoginActivity : AppCompatActivity() {
                 val currentUser = auth.currentUser
                 val userId = currentUser?.uid
 
-                val bitmap = BitmapFactory.decodeResource(resources, R.drawable.fotosinoperfilredim)
+                val bitmap = BitmapFactory.decodeResource(resources, R.drawable.fotosinperfil)
                 val baos = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
                 val data = baos.toByteArray()

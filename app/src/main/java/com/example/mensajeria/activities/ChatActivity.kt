@@ -44,7 +44,6 @@ class ChatActivity : AppCompatActivity() {
     private var username=""
     val IMAGE_REQUEST_CODE = 1_000;
     lateinit var storage: FirebaseStorage
-    var isTextFieldActive = false
     private lateinit var imageView: ImageView
 
     var MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0
@@ -68,6 +67,7 @@ class ChatActivity : AppCompatActivity() {
             intent.putExtra("chatId", chatId)
             intent.putExtra("user", user)
             intent.putExtra("otherUser", otherUser)
+            intent.putExtra("chat",0)
             startActivity(intent)
         true
         finish()}
@@ -89,8 +89,6 @@ class ChatActivity : AppCompatActivity() {
 
 
         titulo.setOnClickListener {
-            // Aquí puedes agregar el código para navegar a otra página
-            // Por ejemplo, puedes usar Intent para iniciar otra actividad
             val intent = Intent(this, PerfilActivity::class.java)
             intent.putExtra("otherUser", otherUser)
             intent.putExtra("nameOtherUser", username)
@@ -133,7 +131,6 @@ class ChatActivity : AppCompatActivity() {
                         var width = metrics.widthPixels // ancho absoluto en pixels
                         val height = metrics.heightPixels
                         val resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
-
                         val drawable = BitmapDrawable(resources, resizedBitmap)
                         drawable.gravity = Gravity.FILL
                         ex.background = drawable
@@ -143,7 +140,6 @@ class ChatActivity : AppCompatActivity() {
 
                 }
         messageTextField.setOnFocusChangeListener { view, hasFocus ->
-
         }
         storage = Firebase.storage
     }
@@ -329,6 +325,13 @@ class ChatActivity : AppCompatActivity() {
         }
         return inSampleSize
     }
+    override fun onBackPressed() {
+        val intent = Intent(this, ListOfChatsActivity::class.java)
+        intent.putExtra("user", user)
+        startActivity(intent)
+        finish()
+    }
+
 }
 
 
