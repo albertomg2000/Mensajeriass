@@ -119,7 +119,6 @@ class LoginActivity : AppCompatActivity() {
 
 
     private fun isPasswordValid(password: String): Boolean {
-        // Aquí puedes establecer tus propios criterios de validación de contraseña
         return password.length >= 6
     }
     private fun loginUser() {

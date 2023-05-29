@@ -180,12 +180,6 @@ class PerfilActivity : AppCompatActivity() {
 
     }
 
-
-                private fun obtenerNombreFoto(url: String): String {
-                    val nombreArchivo = url.substringAfterLast("/") // Obtener la parte de la URL después de la última barra "/"
-                    val nombreFoto = nombreArchivo.substringBeforeLast(".") // Obtener la parte antes del último punto ".", que sería el nombre de la foto sin la extensión
-                    return nombreFoto
-                }
     override fun onBackPressed() {
         val intent = Intent(this, ChatActivity::class.java)
         intent.putExtra("chatId", chatId)

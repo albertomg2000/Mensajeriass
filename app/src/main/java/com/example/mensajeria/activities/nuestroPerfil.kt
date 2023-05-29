@@ -194,7 +194,6 @@ class nuestroPerfil : AppCompatActivity() {
                 // Recorre todas las referencias de imagen y obtén sus URL
                 val downloadUrls: MutableList<String> = mutableListOf()
                 val downloadTasks = mutableListOf<Task<Uri>>()
-
                 for (imageRef in imageRefs) {
                     val downloadTask = imageRef.downloadUrl
                     downloadTasks.add(downloadTask)
