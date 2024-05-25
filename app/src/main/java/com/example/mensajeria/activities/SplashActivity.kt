@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.example.mensajeria.R
 
+//Pantalla que sale durante unos pocos segundos al iniciar la pagina
 class SplashActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {

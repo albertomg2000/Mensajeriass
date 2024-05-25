@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.mensajeria.R
@@ -18,11 +17,10 @@ import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.activity_login.*
 import java.io.ByteArrayOutputStream
 
+//inicio de sesion o creacion de usuario
 class LoginActivity : AppCompatActivity() {
 
     private val auth = Firebase.auth
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -31,6 +29,7 @@ class LoginActivity : AppCompatActivity() {
         }
         loginButton.setOnClickListener { loginUser() }
         createButton.setOnClickListener { createUser() }
+        //para cuando no te acuerdas de la contrasena
         forgotPasswordText.setOnClickListener {
                 val intent = Intent(this, Restablecimiento::class.java)
                 startActivity(intent)
@@ -39,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
 
         checkUser()
     }
-
+    //vemos si existe el usuario
     private fun checkUser(){
         val currentUser = auth.currentUser
 
@@ -68,12 +67,8 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(baseContext, "Contraseña demasiado corta", Toast.LENGTH_LONG).show()
             return
         }
-
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if(task.isSuccessful) {
-                print(email.length)
-                val currentUser = auth.currentUser
-                val userId = currentUser?.uid
 
                 val bitmap = BitmapFactory.decodeResource(resources, R.drawable.fotosinperfil)
                 val baos = ByteArrayOutputStream()
@@ -81,6 +76,7 @@ class LoginActivity : AppCompatActivity() {
                 val data = baos.toByteArray()
 
                 // Subir imagen a Storage
+                //subo una imagen por defecto a su perfil, luego sera modificable
                 val storageRef = Firebase.storage.reference.child("images/users/$email/profile.png")
                 val uploadTask = storageRef.putBytes(data)
 
@@ -93,10 +89,9 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 val db = FirebaseFirestore.getInstance()
-
+                //creamos un estado predeterminado
                 val estadosRef = db.collection("Estados")
                 val docRef = estadosRef.document(email)
-
                 val estadoMap = hashMapOf("estado" to "Hey there im using Whatsapp!!")
 
                 docRef.set(estadoMap)
@@ -105,10 +100,9 @@ class LoginActivity : AppCompatActivity() {
                     }
                     .addOnFailureListener { exception ->
                         // Ocurrió un error al guardar la información en Firestore
-                        // Manejar el error apropiadamente
                     }
             }
-            }
+        }
     }
 
 
@@ -117,10 +111,10 @@ class LoginActivity : AppCompatActivity() {
         return pattern.matcher(email).matches()
     }
 
-
     private fun isPasswordValid(password: String): Boolean {
         return password.length >= 6
     }
+    //check de si el usuario y contrasena son correctas
     private fun loginUser() {
         val email = emailText.text.toString()
         val password = passwordText.text.toString()
@@ -149,6 +143,5 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(baseContext, "Correo electrónico demasiado corto", Toast.LENGTH_SHORT).show()
         }
     }
-
 
 }

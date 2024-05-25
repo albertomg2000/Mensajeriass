@@ -28,7 +28,7 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_list_of_chats.*
 import java.util.*
 
-
+// la clase mas importante, donde se recogen todos mis chats
 class ListOfChatsActivity : AppCompatActivity() {
     private var user = ""
     private var miUsuario= ""
@@ -48,7 +48,7 @@ class ListOfChatsActivity : AppCompatActivity() {
         miUsuario=user
         val fullText = user
         val atIndex = fullText.lastIndexOf("@")
-
+        // hago que se vea mi imagen de perfil en el toolbar a la derecha, si clickeo me lleva a mi perfil
         foto.setOnClickListener{
             if (atIndex != -1) {
                  username = fullText.substring(0, atIndex)
@@ -81,17 +81,17 @@ class ListOfChatsActivity : AppCompatActivity() {
             foto.setImageDrawable(drawable)
             foto.background = resources.getDrawable(R.drawable.rounded_image)
         }.addOnFailureListener { exception ->
-
         }
-
             insertarDatos(user)
 
         if (user.isNotEmpty()) {
             initViews()
         }
+        //lista con los chats
         val listaaa = findViewById<View>(R.id.ListViews) as ListView
         registerForContextMenu(listaaa)
         listaaa.setOnItemClickListener { parent, view, position, id ->
+            //obtengo todos los chats que tengo en mi usuario
             var Seleccion = (ListViews.adapter as ChatAdapter).getData()
             chatSelected( Seleccion.get(position))
 
@@ -101,10 +101,8 @@ class ListOfChatsActivity : AppCompatActivity() {
 
     //para ver cada 10 segundos si tenemos un nuevo chat
     private val mRunnable = object : Runnable {
-
         override fun run() {
             val userRef = db.collection("users").document(user)
-
             userRef.collection("chats")
                 .get()
                 .addOnSuccessListener { chats ->
@@ -117,7 +115,7 @@ class ListOfChatsActivity : AppCompatActivity() {
         }
     }
 
-    //agrego el nuevl perfil a mi base de datos
+    //agrego el nuevo perfil a mi base de datos (solo si es nuevo)
     private fun insertarDatos(usuario:String) {
         val db = Firebase.firestore
         val datos= hashMapOf("name" to usuario)
@@ -153,7 +151,6 @@ class ListOfChatsActivity : AppCompatActivity() {
         inflater.inflate(R.menu.context_menu, menu)
     }
 
-    //mensaje de advertencia
     override fun onContextItemSelected(item: MenuItem): Boolean {
         val userRef = db.collection("users").document(user)
 
@@ -175,7 +172,7 @@ class ListOfChatsActivity : AppCompatActivity() {
         val info = item.menuInfo as AdapterView.AdapterContextMenuInfo
         return when (item.itemId) {
 
-            //borrar chat
+            //borrar chat si intento borrarlo me salte un mensaje de advertencia
             R.id.delete_item -> {
                 System.out.println((ListViews.adapter as ChatAdapter).getData()[info.position].users[0])
                 var Seleccion = (ListViews.adapter as ChatAdapter).getData()
@@ -234,7 +231,7 @@ class ListOfChatsActivity : AppCompatActivity() {
         isButtonClickable = true
     }
     private fun initViews(){
-        //evito que al darle a buscar chats se me creen mas de un chat
+        // creo un nuevo chat y evito que al darle a buscar chats se me creen mas de un chat
         newChatButton.setOnClickListener {
             if (isButtonClickable) {
                 newChat()
@@ -243,7 +240,7 @@ class ListOfChatsActivity : AppCompatActivity() {
             }
         }
         val userRef = db.collection("users").document(user)
-        //recoge los numeros de liostviews que habra
+        //recoge los numeros de listviews que habra
         userRef.collection("chats")
             .get()
             .addOnSuccessListener { chats ->
@@ -255,7 +252,7 @@ class ListOfChatsActivity : AppCompatActivity() {
                         R.layout.item_chat, listChats
                     )
             }
-//para que se vean los litsviews
+        //para que se vean los litsviews
         userRef.collection("chats")
             .get()
             .addOnSuccessListener { chats ->
@@ -273,6 +270,7 @@ class ListOfChatsActivity : AppCompatActivity() {
             }
     }
     private fun chatSelected(chat: Chat) {
+        //Para ir al chat debo saber cual de los dos usuarios es el que intenta acceder al chat
         val intent = Intent(this, ChatActivity::class.java)
         intent.putExtra("chatId", chat.id)
         intent.putExtra("user", user)
@@ -287,7 +285,7 @@ class ListOfChatsActivity : AppCompatActivity() {
         startActivity(intent)
 
     }
-
+    //creacion de un nuevo chat
     private fun newChat() {
         val otherUser = newChatText.text.toString()
         val chatName = "$user y $otherUser"
@@ -325,6 +323,7 @@ class ListOfChatsActivity : AppCompatActivity() {
                                 newChatText.setText("")
                                 startActivity(intent)
                             } else {
+                                //si intento crear un chat con un usuario inexistente
                                 newChatText.setText("")
                                 Toast.makeText(this, "Usuario no encontrado", Toast.LENGTH_SHORT)
                                     .show()

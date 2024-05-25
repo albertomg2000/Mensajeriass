@@ -11,6 +11,7 @@ import com.example.mensajeria.R
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 
+//adaptador del chat
 class ChatAdapter(var miUser : String ,var context:Context?, var textViewResourceId: Int, var elementos: MutableList<Chat>?): BaseAdapter() {
     var chats: MutableList<Chat> =  mutableListOf()
     var listachats: MutableList<Chat> = mutableListOf()

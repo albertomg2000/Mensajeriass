@@ -9,6 +9,7 @@ import com.example.mensajeria.models.Message
 import com.example.mensajeria.R
 import kotlinx.android.synthetic.main.item_message.view.*
 
+//el adaptador de los mensajes
 class MessageAdapter(private val user: String): RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
 
     private var messages: List<Message> = emptyList()

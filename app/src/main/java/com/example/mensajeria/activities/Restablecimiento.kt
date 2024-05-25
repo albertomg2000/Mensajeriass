@@ -6,7 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.mensajeria.R
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-
+//clase para enviar un correo a tu email para cambiar la contrasena, sirve para cuando la olvidas
+//utilizo una funcion de firebase para el restablecimiento de la contra
 class Restablecimiento : AppCompatActivity() {
 
     private lateinit var emailEditText: EditText

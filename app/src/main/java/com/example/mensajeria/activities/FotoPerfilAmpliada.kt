@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.activity_chat.*
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 
+// Es la foto de perfil ampliada de mi usuario, por lo que la puedo cambiar
 class FotoPerfilAmpliada : AppCompatActivity() {
 
     private lateinit var imageView: ImageView
@@ -59,7 +60,7 @@ class FotoPerfilAmpliada : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         toolbar.title = ""
         val backButton = findViewById<ImageButton>(R.id.back_button)
-
+        //necesito los permisos para acceder a la galeria para poder cambiar la imagen
         botonPerfil.setOnClickListener {
             if (ContextCompat.checkSelfPermission(
                     this,
@@ -84,7 +85,7 @@ class FotoPerfilAmpliada : AppCompatActivity() {
                 pickImageFromGallery()
             }
         }
-        // Agregar un OnClickListener al ImageButton
+        // un boton para poder volver hacia atras a nuestro perfil
         backButton.setOnClickListener {
             val intent = Intent(this, nuestroPerfil::class.java)
             intent.putExtra("user", user)
@@ -142,7 +143,7 @@ class FotoPerfilAmpliada : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
+    //volver hacia atras
     override fun onBackPressed() {
         val intent = Intent(this, nuestroPerfil::class.java)
         intent.putExtra("user", user)
@@ -151,13 +152,13 @@ class FotoPerfilAmpliada : AppCompatActivity() {
         true
         finish()
     }
-
+    //elijo la foto
     private fun pickImageFromGallery() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         startActivityForResult(intent, IMAGE_REQUEST_CODE)
     }
-
+    //pantalla de carga, para informar de que se esta cargando la subida de imagen
     private fun uploadImageToFirebaseStorage(bitmap: Bitmap) {
         // Mostrar diálogo de carga
         val progressDialog = ProgressDialog(this)

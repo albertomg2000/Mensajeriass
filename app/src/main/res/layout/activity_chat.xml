@@ -15,7 +15,8 @@
         layout="@layout/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="-8dp" />
 
     <ImageButton
         android:id="@+id/backButton"
@@ -37,11 +38,11 @@
         android:layout_marginStart="60dp"
         android:layout_marginBottom="710dp"
         android:background="@drawable/rounded_image"
+        android:clickable="true"
         app:civ_border_color="#CCCCCC"
         app:civ_border_width="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:clickable="true" />
+        app:layout_constraintStart_toStartOf="parent" />
     <EditText
         android:id="@+id/messageTextField"
         android:layout_width="0dp"
@@ -90,6 +91,18 @@
         app:layout_constraintVertical_bias="0.905"
         tools:srcCompat="@mipmap/lupita" />
 
+    <TextView
+        android:id="@+id/teeeext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="25dp"
+        android:text="TextView"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/perfilother"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 

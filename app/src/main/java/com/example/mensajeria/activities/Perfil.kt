@@ -32,7 +32,7 @@ class PerfilActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.perfil)
 
-        // Instanciar los widgets
+        // Widgets
         val profilePictureImageView = findViewById<ImageView>(R.id.profilePictureImageView)
         val nameTextView = findViewById<TextView>(R.id.nameTextView)
         val emailTextView = findViewById<TextView>(R.id.emailTextView)
@@ -43,8 +43,6 @@ class PerfilActivity : AppCompatActivity() {
         intent.getStringExtra("nameOtherUser")?.let { nameOtherUser = it }
         intent.getStringExtra("chatId")?.let { chatId = it }
         intent.getStringExtra("user")?.let { user = it }
-
-
         LoadingImage = findViewById(R.id.loading_image_view)
         LoadingLetter = findViewById(R.id.loading_letter_view)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -52,7 +50,8 @@ class PerfilActivity : AppCompatActivity() {
         }
         profilePictureImageView.visibility = View.GONE
         RecyclerVieww.visibility=View.GONE
-        // Obtener la referencia al archivo de imagen en el storage
+
+        // Obtener la referencia al archivo de imagen en el storage, es la foto de perfil del otro usuario
         val storageRefere = FirebaseStorage.getInstance().getReference()
             .child("images/users/" + otherUser + "/profile.png")
 

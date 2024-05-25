@@ -1,7 +1,6 @@
 package com.example.mensajeria.activities
 
 import android.Manifest
-import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -9,7 +8,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +16,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mensajeria.R
-import com.example.mensajeria.adapters.ChatAdapter
 import com.example.mensajeria.adapters.HorizontalImageAdapter
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -26,16 +23,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import kotlinx.android.synthetic.main.activity_list_of_chats.*
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.nuestroperfil.*
-import kotlinx.android.synthetic.main.perfil.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 
 private lateinit var imageView: ImageView
 private var user = ""
 private var userName = ""
+
+//Dependiendo de si el usuario que manejamos es el nuestro o el de otra persona nos llevara a este activity o al Perfil activity (de otra persona)
 class nuestroPerfil : AppCompatActivity() {
     private lateinit var LoadingImage: ImageView
     private lateinit var LoadingLetter: ImageView
@@ -45,7 +41,6 @@ class nuestroPerfil : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.nuestroperfil)
-
 
         // Instanciar los widgets
         val profilePictureImageView = findViewById<ImageView>(R.id.profilePictureImageView2)
@@ -58,19 +53,21 @@ class nuestroPerfil : AppCompatActivity() {
         val relativeLayout = findViewById<RelativeLayout>(R.id.relativeLayout2)
         imageView = findViewById(R.id.imageView24)
 
+        // Obtener información del Intent
+        //necesito saber que usuario soy
         intent.getStringExtra("username")?.let { userName = it }
         intent.getStringExtra("user")?.let { user = it }
 
-        // Ejemplo de cómo usar los widgets
+        // Configurar la vista inicial del perfil
         profilePictureImageView.setImageResource(R.drawable.fotosinperfil)
         nameTextView.text = userName
         emailTextView.text = user
 
+        // Obtener referencia a Firestore y Storage de los estados
         val dbEstado = FirebaseFirestore.getInstance()
         val estadosRefe = dbEstado.collection("Estados")
         val docRefe = estadosRefe.document(user)
 
-// Obtener referencia al botón
 
 
         guardarButton.setOnClickListener {
@@ -94,11 +91,13 @@ class nuestroPerfil : AppCompatActivity() {
                 }
         }
 
+        // Configurar vista de carga mientras no se cargue mis datos del perfil habra una especie de pantalla de carga
         LoadingImage = findViewById(R.id.loading_image_view2)
         LoadingLetter = findViewById(R.id.loading_letter_view2)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.statusBarColor = ContextCompat.getColor(this, R.color.negro)
         }
+        //una vez cargado los datos, mi pantalla de carga desaparece
         profilePictureImageView.visibility = View.GONE
         statusTextView.visibility = View.GONE
         emailTextView.visibility=View.GONE
@@ -109,6 +108,7 @@ class nuestroPerfil : AppCompatActivity() {
         // Obtener la referencia al archivo de imagen en el storage
         val storageRefere = FirebaseStorage.getInstance().getReference()
             .child("images/users/" + user + "/profile.png")
+
         // Descargar la imagen y mostrarla en el ImageView mientras no tenga la imagen muestro una imagen de carga
         storageRefere.getBytes(Long.MAX_VALUE).addOnSuccessListener { bytes ->
             val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
@@ -118,7 +118,7 @@ class nuestroPerfil : AppCompatActivity() {
             profilePictureImageView.scaleType = ImageView.ScaleType.CENTER_CROP
             profilePictureImageView.visibility = View.VISIBLE
             relativeLayout.setBackgroundResource(R.color.colorPrimary)
-            guardarButton.visibility=View.VISIBLE
+            //la verdadera pantalla de perfil aparece una vez cargado los datos
             nameTextView.visibility=View.VISIBLE
             statusTextView.visibility = View.VISIBLE
             emailTextView.visibility = View.VISIBLE
@@ -154,8 +154,8 @@ class nuestroPerfil : AppCompatActivity() {
         }.addOnFailureListener { exception ->
             // Manejar errores
         }
+        // Obtener el estado del usuario (como en whasapp que puedes poner estados) y mostrarlo
         val db = FirebaseFirestore.getInstance()
-
         val estadosRef = db.collection("Estados")
         val docRef = estadosRef.document(user)
 
@@ -170,11 +170,9 @@ class nuestroPerfil : AppCompatActivity() {
                 }
             }
             .addOnFailureListener { exception ->
-
             }
 
-
-        //ampliar imagen
+        //ampliar imagen al darle un click a la imagen
         profilePictureImageView.setOnClickListener{
             val intent = Intent(this, FotoPerfilAmpliada::class.java)
             intent.putExtra("user", user)
@@ -227,7 +225,7 @@ class nuestroPerfil : AppCompatActivity() {
                         RecyclerVieww.adapter = adapter
 
 
-
+                        // Boton para añadir fotos, en el perfil podemos tener como una mini galeria de imagenes, como instagram
         addPhotosButton.setOnClickListener {  if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -248,8 +246,8 @@ class nuestroPerfil : AppCompatActivity() {
 
             }
         } else {
+            //si tengo los permisos para obtener imagenes llamo a la funcion para coger imagenes del movil
             pickImageFromGallery()
-
 
         }
         }
@@ -268,6 +266,7 @@ class nuestroPerfil : AppCompatActivity() {
         intent.type = "image/*"
         startActivityForResult(intent, IMAGE_REQUEST_CODE)
     }
+    //subo la imagen a mi perfil
     private fun uploadImageToFirebaseStorage(bitmap: Bitmap,dato : String) {
 
         // Convertir el Bitmap a un arreglo de bytes
@@ -330,9 +329,7 @@ class nuestroPerfil : AppCompatActivity() {
             }
         }
     }
-
-
-
+    //configuracion para poder volver hacia atras cuando le doy al back del movil
     override fun onBackPressed() {
 
         val intent = Intent(this, ListOfChatsActivity::class.java)

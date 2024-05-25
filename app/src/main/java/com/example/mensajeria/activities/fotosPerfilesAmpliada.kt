@@ -26,7 +26,6 @@ package com.example.mensajeria.activities
     import com.example.mensajeria.R
     import com.google.firebase.ktx.Firebase
     import com.google.firebase.storage.FirebaseStorage
-    import com.google.firebase.storage.StorageReference
     import com.google.firebase.storage.ktx.storage
     import java.io.ByteArrayOutputStream
 
@@ -62,7 +61,7 @@ package com.example.mensajeria.activities
             supportActionBar?.setDisplayShowTitleEnabled(false)
             toolbar.title = ""
             val backButton = findViewById<ImageButton>(R.id.back_button)
-
+                //Borrar imagen y actualizar despues de borrar
                 botonDeBorrarImagen.isInvisible = false
                 botonDeBorrarImagen.setCompoundDrawablesWithIntrinsicBounds(trashIcon, null, null, null)
                 botonDeBorrarImagen.setOnClickListener {
@@ -114,6 +113,7 @@ package com.example.mensajeria.activities
             val storageRef = Firebase.storage.getReferenceFromUrl(imageUrl)
             storageRef.getBytes(Long.MAX_VALUE)
                 .addOnSuccessListener { bytes ->
+                    //una vez cargue los datos, la pantalla de carga se va
                     val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
                     imageView.setImageBitmap(bmp)
                     LoadingLetter.visibility = View.GONE

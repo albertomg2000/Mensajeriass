@@ -27,6 +27,9 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import java.io.ByteArrayOutputStream
 
+//es igual que foto perfil ampliada solo que no deja editarlo, porque no es tu foto
+//User es tu usuario
+//other user es el usuario con el que hablas
 class FotoAmpliadaOtro : AppCompatActivity() {
     private var chatId = ""
     private var otherUser = ""
@@ -35,7 +38,6 @@ class FotoAmpliadaOtro : AppCompatActivity() {
     private var imagenPerfiles = 100
     private lateinit var imageView: ImageView
     private var user = ""
-
 
     private lateinit var LoadingImage: ImageView
     private lateinit var LoadingLetter: ImageView
@@ -65,9 +67,11 @@ class FotoAmpliadaOtro : AppCompatActivity() {
         val backButton = findViewById<ImageButton>(R.id.back_button)
 
         botonPerfil.isInvisible=true
-        System.out.println(chat)
-       backButton.setOnClickListener {
+        backButton.setOnClickListener {
 
+            // he reutilizado esta clase de manera que se puede acceder desde chat activity para ver la foto del otro usuario
+            // o desde el perfil del otro usuario, de manera que si le paso como valor de intent 0 significa que vengo desde chat activity
+            //si es 1 desde el perfil para volver debo tener en cuenta desde donde vengo
            if (chat == 0) {
                val intent = Intent(this, ChatActivity::class.java)
                intent.putExtra("chatId", chatId)
@@ -83,10 +87,9 @@ class FotoAmpliadaOtro : AppCompatActivity() {
                intent.putExtra("user", user)
                intent.putExtra("otherUser", otherUser)
                startActivity(intent)
-
            }
        }
-
+        //obtengo el nombre del otro usuario y configuro como debe aparecer
         val fullText = otherUser
         val atIndex = fullText.lastIndexOf("@")
         if (atIndex != -1) {
@@ -165,9 +168,6 @@ class FotoAmpliadaOtro : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-
-
 }
 
 
